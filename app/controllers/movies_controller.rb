@@ -15,8 +15,8 @@ class MoviesController < ApplicationController
       @ratings = session[:ratings]
     else
       query = Hash.new
-      session[:ratings].each do |rating|
-        query['rating[' + rating + ']'] =1
+      @all_ratings.each do |rating|
+        query[ rating] =1
       @ratings = query
       end
     end
@@ -26,112 +26,26 @@ class MoviesController < ApplicationController
     elsif session[:sort]
         @sort = session[:sort]
     end
-    @movies = Movie.where(rating:@ratings.keys).order(@sort)
+    @movies = Movie.where(rating:@ratings.keys)
     
     if params[:sort]!=session[:sort] or params[:ratings]!=session[:ratings]
       session[:sort] = @sort
       session[:ratings] = @ratings
       flash.keep
-      redirect_to movies_path(sort: session[:sort],ratings:session[:ratings])
+      redirect_to movies_path(sort: session[:sort],ratings: session[:ratings])
     end 
     
     if params[:sort] == "title"
-      @movies.order(title: :asc)
+      @movies = @movies.order(title: :asc)
       @temp = "bg-warning"
     elsif params[:sort] == "release_date"
-      @movies.order(release_date: :asc)
-      @rell = "bg-warning"
-    else
-      @movies = Movie.all
-      @temp ="bg-white" 
-      @rell = "bg-white"
-    end
-    
-=begin     
-    if params[:ratings]
-      @output = params[:ratings].keys
-      session[:filter_rating] =  @output
-    elsif session[:filter_rating]
-      query = Hash.new
-      session[:filter_rating].each do |rating|
-        query['rating[' + rating + ']'] =1
-      end
-      if params[:sort]
-        query[:sort] = params[:sort]
-      end
-      flash.keep
-      redirect_to movies_path(query)
-    else
-      @output = @all_ratings
-    end
-    @movies.where!(rating: @output)
-    
-
-      
-
-    case params[:sort]
-    when 'title'
-      @movies.order!('title asc')
-      @temp = "hilite"
-    when 'release_date'
-      @movies.order!('release_date asc')
-      @rell = "hilite"
-    end
-    
-     @sort = params[:sort]||session[:sort]
-    @all_ratings = Movie.ratings
-    @ratings =  params[:ratings] || session[:ratings] || Hash[@all_ratings.map {|rating| [rating, rating]}]
-    @movies = Movie.where(rating:@ratings.keys).order(@sort)
-     if params[:sort]!=session[:sort] or params[:ratings]!=session[:ratings]
-      session[:sort] = @sort
-      session[:ratings] = @ratings
-      flash.keep
-      redirect_to movies_path(sort: session[:sort],ratings:session[:ratings])
-
-    if params[:sort] == "title"
-      @movies.order!("title asc")
-      @temp = "bg-warning"
-    elsif params[:sort] == "release_date"
-      @movies.order!(release_date: :asc)
+      @movies =  @movies.order(release_date: :asc)
       @rell = "bg-warning"
     else
       @temp ="bg-white" 
       @rell = "bg-white"
     end
 
-  
-
-    if params[:ratings]
-      @ratings_to_show = params[:ratings].keys
-      session[:filtered_rating] = @ratings_to_show
-    elsif session[:filtered_rating]
-      query = Hash.new
-      session[:filtered_rating].each do |rating|
-        query['ratings['+ rating + ']'] = 1
-      end
-      query['sort'] = params[:sort] if params[:sort]
-      session[:filtered_rating] = nil
-      flash.keep
-      redirect_to movies_path(query)
-      #@ratings_to_show = session[:filtered_rating]
-    else
-      @ratings_to_show = @all_ratings
-    end
-
-    @movies.where!(rating: @ratings_to_show)
-    
-    case params[:sort]
-    when 'title'
-      @movies.order!('title asc')
-      @title_class = "hilite"
-    when 'release_date'
-      @movies.order!('release_date asc')
-      @release_date_class = "hilite"
-    end
-    
- 
-    #end 
-=end
   end 
 
   def new
