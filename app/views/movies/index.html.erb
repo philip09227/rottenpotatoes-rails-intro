@@ -8,8 +8,8 @@
 <%= form_tag movies_path, method: :get, id: 'ratings_form' do %>
   <% @all_ratings.each do |rating| %>
     <div class="form-check  form-check-inline">
-      <%= label_tag "ratings[#{rating}]", rating, class: 'form-check-label' %>
-      <%= check_box_tag "ratings[#{rating}]", "1",  @ratings.include?(rating),id: "ratings_[#{rating}]"%>
+      <%= label_tag "ratings[#{rating}]", rating %>
+      <%= check_box_tag "ratings[#{rating}]", "1",  @ratings.include?(rating) , id: "ratings_[#{rating}]"%>
     </div>
   <% end %>
   <%= submit_tag 'Refresh', id: 'ratings_submit', class: 'btn btn-primary' %>

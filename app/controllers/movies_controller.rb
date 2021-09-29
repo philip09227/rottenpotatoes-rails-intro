@@ -26,7 +26,7 @@ class MoviesController < ApplicationController
     elsif session[:sort]
         @sort = session[:sort]
     end
-    @movies = Movie.where(rating:@ratings.keys)
+    @movies = Movie.where(rating: @ratings.keys)
     
     if params[:sort]!=session[:sort] or params[:ratings]!=session[:ratings]
       session[:sort] = @sort
