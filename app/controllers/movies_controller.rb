@@ -7,18 +7,32 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @movies = Movie.all
+    @all_ratings = Movie.get_movie_rating_collection
+    @current = nil
     
+    if params[:ratings]
+      @output = params[:ratings].keys
+    else
+      @output = @all_ratings
+    end
+    @movies.where!(rating: @output)
+    
+    @current  = @movies.where!(rating: @output)
+    
+ 
     if params[:sort] == "title"
-      @movies = Movie.order(title: :asc)
+      @movies=Movie.order(title: :asc)
       @temp = "bg-warning"
     elsif params[:sort] == "release_date"
-      @movies = Movie.order(release_date: :asc)
+      @movies=Movie.order(release_date: :asc)
       @rell = "bg-warning"
     else
-      @movies = Movie.all
       @temp ="bg-white" 
-      @rell = "bg-white" 
-    end 
+      @rell = "bg-white"
+    end
+
+
   end 
 
   def new
